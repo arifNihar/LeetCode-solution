@@ -1,17 +1,27 @@
-import heapq
-
 class Solution:
+    def countValue(self, mat, target, n):
+        cnt = 0
+        row, col = n-1, 0
+
+        while row >= 0 and col < n:
+            if mat[row][col] <= target:
+                cnt += row + 1
+                col += 1
+            else:
+                row -= 1
+        return cnt
+
     def kthSmallest(self, matrix: List[List[int]], k: int) -> int:
         n = len(matrix)
-        min_heap = []
+        l, r = matrix[0][0], matrix[n-1][n-1]
 
-        for i in range(n):
-            heapq.heappush(min_heap, (matrix[i][0], i, 0))
-        
-        for _ in range(k-1):
-            val, r, c = heapq.heappop(min_heap)
+        while l < r:
+            m = l + (r-l)//2
+            cnt = self.countValue(matrix, m,n)
 
-            if c + 1 < n:
-                heapq.heappush(min_heap, (matrix[r][c+1], r,c+1))
+            if cnt < k:
+                l = m + 1
+            else:
+                r = m
+        return l
         
-        return min_heap[0][0]
